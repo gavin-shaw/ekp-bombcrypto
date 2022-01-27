@@ -1,0 +1,6 @@
+configVersion: 1
+project: ekp-bombcrypto
+---
+image: bombcrypto
+dockerfile: Dockerfile
+context: .
