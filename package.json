@@ -8,8 +8,8 @@
     "start:prod": "node dist/main",
     "gen-secret-key": "werf helm secret generate-secret-key > .werf_secret_key",
     "encrypt-secrets": "werf helm secret values encrypt clear-values.yaml -o .helm/secret-values.yaml",
-    "gh-set-secret-key": "gh secret set WERF_SECRET_KEY --repos=\"bombcrypto\" < .werf_secret_key",
-    "gh-set-do-creds": "gh secret set KUBE_CONFIG_BASE64_DATA --repos=\"bombcrypto\" -b$(doctl kubernetes cluster kubeconfig show ekp | base64)"
+    "gh-set-secret-key": "gh secret set WERF_SECRET_KEY --repos=\"gavin-shaw/ekp-bombcrypto\" < .werf_secret_key",
+    "gh-set-do-creds": "gh secret set KUBE_CONFIG_BASE64_DATA --repos=\"gavin-shaw/ekp-bombcrypto\" -b$(doctl kubernetes cluster kubeconfig show ekp | base64)"
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
