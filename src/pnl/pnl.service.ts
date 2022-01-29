@@ -127,6 +127,7 @@ export class PnlProcessor {
   ): Promise<TokenMetadata[]> {
     return from(addressTokenTxs)
       .pipe(
+        filter((tx) => !!tx.tokenAddress),
         distinct((tx) => tx.tokenAddress),
         mergeMap((tx: TokenTransfer) =>
           this.moralisService.tokenMetadataOf('bsc', tx.tokenAddress),
