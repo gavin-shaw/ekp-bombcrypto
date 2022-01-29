@@ -1,11 +1,10 @@
-import helloWorld from '../hello-world/hello-world.uielement';
-
+import pnl from '../pnl/pnl.uielement';
 
 export default function pages() {
   return [
     {
-      id: 'bombcrypto/hello-world',
-      element: helloWorld(),
+      id: 'bombcrypto/pnl',
+      element: pnl(),
     },
   ];
 }
