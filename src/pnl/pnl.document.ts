@@ -7,7 +7,6 @@ export class PnlDocument extends EkDocument {
 
   action: string;
   actionTooltip: string;
-  bcoinBnbValue: number;
   bcoinValue: number;
   block: number;
   costBasisFiat: number;
@@ -16,7 +15,6 @@ export class PnlDocument extends EkDocument {
   gasBnbValue: number;
   gasFiatValue: number;
   fiatSymbol: string;
-  pnlBnbValue: number;
   pnlFiatValue: number;
   realizedValueFiat: number;
   timestamp: number;

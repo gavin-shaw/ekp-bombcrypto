@@ -2,7 +2,7 @@ export default function menus() {
   return [
     {
       id: 'bombcrypto-hello-world',
-      title: 'P & L',
+      title: 'Profit & Loss',
       navLink: 'bombcrypto/pnl',
       icon: 'cil-bank',
     },

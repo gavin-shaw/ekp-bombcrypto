@@ -17,7 +17,6 @@ import {
   WalletSelector,
 } from '@earnkeeper/ekp-ui';
 import { PnlDocument } from './pnl.document';
-import { BCOIN_CONTRACT_ADDRESS } from '../util/constants';
 
 export default function element(): UiElement {
   return Container({
@@ -27,13 +26,10 @@ export default function element(): UiElement {
           Col({
             children: [
               PageHeaderTile({
-                title: 'P & L',
+                title: 'Profit & Loss',
                 icon: 'cil-bank',
               }),
             ],
-          }),
-          Col({
-            children: [WalletSelector({ hideChains: true })],
           }),
         ],
       }),
@@ -47,6 +43,7 @@ function summaryStats() {
   return Row({
     children: [
       Col({
+        className: 'col-xs-12 col-md-6',
         children: [
           SummaryStats({
             rows: [
@@ -64,14 +61,6 @@ function summaryStats() {
                   `${path(PnlDocument)}..fiatSymbol`,
                 ),
               },
-            ],
-          }),
-        ],
-      }),
-      Col({
-        children: [
-          SummaryStats({
-            rows: [
               {
                 label: 'Unrealized BCOIN',
                 value: formatCurrency(
@@ -82,6 +71,10 @@ function summaryStats() {
             ],
           }),
         ],
+      }),
+      Col({
+        className: 'cols-xs-12 col-md-6',
+        children: [WalletSelector({ hideChains: true })],
       }),
     ],
   });

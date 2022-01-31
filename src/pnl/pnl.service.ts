@@ -2,24 +2,23 @@ import {
   chains,
   ClientService,
   ClientStateChangedEvent,
-  CoingeckoService,
-  CoinPrice,
   collection,
+  FiatPrice,
   filterPath,
   MoralisService,
   parseClientAddresses,
   parseCurrency,
+  PriceService,
   TokenMetadata,
   TokenTransfer,
   Transaction,
   TransactionService,
 } from '@earnkeeper/ekp-sdk-nestjs';
-import { ERC20PriceDto } from '@earnkeeper/ekp-sdk-nestjs/dist/sdk/moralis/dto';
 import { Injectable } from '@nestjs/common';
 import { ethers } from 'ethers';
 import _ from 'lodash';
 import moment from 'moment';
-import { distinct, filter, from, map, mergeMap, of, toArray } from 'rxjs';
+import { distinct, filter, from, mergeMap, of, toArray } from 'rxjs';
 import { BCOIN_CONTRACT_ADDRESS, BOMB_CONTRACT_ADDRESSES } from '../util';
 import {
   BHERO_CONTRACT_ADDRESS,
@@ -36,7 +35,7 @@ export class PnlProcessor {
     private clientService: ClientService,
     private moralisService: MoralisService,
     private transactionService: TransactionService,
-    private coingeckoService: CoingeckoService,
+    private priceService: PriceService,
   ) {
     // Subscribe to all client state changes from all clients
     this.clientService.clientStateEvents$
@@ -93,10 +92,10 @@ export class PnlProcessor {
     );
 
     // Get the historic prices of bnb
-    const bnbPrices = await this.getBnbPrices(clientStateChangedEvent, bcTxs);
+    const bnbPrices = await this.getBnbPrices(clientStateChangedEvent);
 
     // Get historic prices of bcoin
-    const bcoinPrices = await this.getBcoinPriceMap(bcTxs);
+    const bcoinPrices = await this.getBcoinPrices(clientStateChangedEvent);
 
     // Get all token metadata
     const tokenMetadatas = await this.getTokenMetadatas(addressTokenTxs);
@@ -131,28 +130,6 @@ export class PnlProcessor {
         distinct((tx) => tx.tokenAddress),
         mergeMap((tx: TokenTransfer) =>
           this.moralisService.tokenMetadataOf('bsc', tx.tokenAddress),
-        ),
-        toArray(),
-      )
-      .toPromise();
-  }
-
-  getBnbPrices(
-    clientStateChangedEvent: ClientStateChangedEvent,
-    txs: Transaction[],
-  ): Promise<CoinPrice[]> {
-    const currencyId = parseCurrency(clientStateChangedEvent)?.id;
-
-    return from(txs)
-      .pipe(
-        map((tx) => moment.unix(tx.blockTimestamp).utc().startOf('day').unix()),
-        distinct(),
-        mergeMap((date) =>
-          this.coingeckoService.historicPriceOf(
-            'binancecoin',
-            currencyId,
-            date,
-          ),
         ),
         toArray(),
       )
@@ -226,11 +203,16 @@ export class PnlProcessor {
     clientStateChangedEvent: ClientStateChangedEvent,
     transactions: Transaction[],
     tokenTransferMap: { [transactionHash: string]: TokenTransfer[] },
-    bnbPrices: CoinPrice[],
-    bcoinPriceMap: { [blockNumber: string]: ERC20PriceDto },
+    bnbPrices: FiatPrice[],
+    bcoinPrices: FiatPrice[],
     tokenMetadatas: TokenMetadata[],
   ): PnlDocument[] {
     const bnbPriceMap = _.chain(bnbPrices)
+      .groupBy('timestamp')
+      .mapValues((values) => values[0])
+      .value();
+
+    const bcoinPriceMap = _.chain(bcoinPrices)
       .groupBy('timestamp')
       .mapValues((values) => values[0])
       .value();
@@ -261,20 +243,18 @@ export class PnlProcessor {
           let action: string;
           let actionTooltip: string;
           let bcoinValue: number;
-          let pnlBnbValue: number;
           let pnlFiatValue: number;
           let costBasisFiat: number;
           let realizedValueFiat: number;
 
-          const bnbCoinPrice =
-            bnbPriceMap[
-              moment
-                .unix(tx.blockTimestamp)
-                .utc()
-                .startOf('day')
-                .unix()
-                .toString()
-            ];
+          const txDay = moment
+            .unix(tx.blockTimestamp)
+            .utc()
+            .startOf('day')
+            .unix()
+            .toString();
+
+          const bnbCoinPrice = bnbPriceMap[txDay];
 
           let bnbPrice: number;
 
@@ -282,14 +262,12 @@ export class PnlProcessor {
             bnbPrice = bnbCoinPrice.price;
           }
 
-          const bcoinErc20Price = bcoinPriceMap[tx.blockNumber.toString()];
+          const bcoinCoinPrice = bcoinPriceMap[txDay];
 
-          let bcoinPrice: number;
+          let bcoinFiatPrice: number;
 
-          if (!!bcoinErc20Price) {
-            bcoinPrice = Number(
-              ethers.utils.formatEther(bcoinErc20Price.nativePrice.value),
-            );
+          if (!!bcoinCoinPrice) {
+            bcoinFiatPrice = bcoinCoinPrice.price;
           }
 
           // BHERO processTokenRequest()
@@ -367,20 +345,14 @@ export class PnlProcessor {
             if (token1Address === BCOIN_CONTRACT_ADDRESS) {
               bcoinValue =
                 -1 * Number(ethers.utils.formatEther(tokenTransfers[0].value));
-              pnlBnbValue = -1 * bcoinValue * bcoinPrice;
-              pnlFiatValue = pnlBnbValue * bnbPrice;
               realizedValueFiat = (realizedValueFiat || 0) + pnlFiatValue;
             } else if (token2Address === BCOIN_CONTRACT_ADDRESS) {
               bcoinValue = Number(
                 ethers.utils.formatEther(tokenTransfers[1].value),
               );
-              pnlBnbValue = -1 * bcoinValue * bcoinPrice;
-              pnlFiatValue = pnlBnbValue * bnbPrice;
+              pnlFiatValue = -1 * bcoinValue * bcoinFiatPrice;
               costBasisFiat = (costBasisFiat || 0) + Math.abs(pnlFiatValue);
             }
-
-            pnlBnbValue = -1 * bcoinValue * bcoinPrice;
-            pnlFiatValue = pnlBnbValue * bnbPrice;
           }
 
           // Pancakeswap bnb to bcoin
@@ -395,8 +367,7 @@ export class PnlProcessor {
               ethers.utils.formatEther(tokenTransfers[0].value),
             );
 
-            pnlBnbValue = -1 * bcoinValue * bcoinPrice;
-            pnlFiatValue = pnlBnbValue * bnbPrice;
+            pnlFiatValue = -1 * bcoinValue * bcoinFiatPrice;
             costBasisFiat = (costBasisFiat || 0) + Math.abs(pnlFiatValue);
           }
 
@@ -411,8 +382,7 @@ export class PnlProcessor {
             bcoinValue =
               -1 * Number(ethers.utils.formatEther(tokenTransfers[0].value));
 
-            pnlBnbValue = -1 * bcoinValue * bcoinPrice;
-            pnlFiatValue = pnlBnbValue * bnbPrice;
+            pnlFiatValue = -1 * bcoinValue * bcoinFiatPrice;
             realizedValueFiat = (realizedValueFiat || 0) + pnlFiatValue;
           }
 
@@ -421,14 +391,9 @@ export class PnlProcessor {
 
           pnlFiatValue -= gasFiatValue;
 
-          const bcoinBnbValue = !!bcoinValue
-            ? bcoinValue * bcoinPrice
-            : undefined;
-
           const document: PnlDocument = {
             action,
             actionTooltip,
-            bcoinBnbValue,
             bcoinValue,
             block: Number(tx.blockNumber),
             costBasisFiat,
@@ -438,7 +403,6 @@ export class PnlProcessor {
             id: tx.hash,
             ownerAddress: tx.ownerAddress,
             ownerChain: 'bsc',
-            pnlBnbValue,
             pnlFiatValue,
             realizedValueFiat,
             timestamp: tx.blockTimestamp,
@@ -452,31 +416,23 @@ export class PnlProcessor {
     );
   }
 
-  /**
-   * Return the bnb price of BCOIN
-   */
-  async getBcoinPriceMap(
-    addressTxs: Transaction[],
-  ): Promise<{ [blockNumber: string]: ERC20PriceDto }> {
-    return from(addressTxs)
-      .pipe(
-        distinct((tx) => tx.blockNumber),
-        mergeMap((tx: Transaction) =>
-          this.moralisService.tokenPriceOf(
-            'bsc',
-            BCOIN_CONTRACT_ADDRESS,
-            tx.blockNumber,
-          ),
-        ),
-        filter((it) => !!it.nativePrice),
-        toArray(),
-        map((prices) =>
-          _.chain(prices)
-            .groupBy('block_number')
-            .mapValues((values) => values[0])
-            .value(),
-        ),
-      )
-      .toPromise();
+  getBnbPrices(
+    clientStateChangedEvent: ClientStateChangedEvent,
+  ): Promise<FiatPrice[]> {
+    return this.priceService.dailyFiatPricesOf(
+      'bsc',
+      chains['bsc'].token.address,
+      parseCurrency(clientStateChangedEvent)?.id,
+    );
+  }
+
+  async getBcoinPrices(
+    clientStateChangedEvent: ClientStateChangedEvent,
+  ): Promise<FiatPrice[]> {
+    return this.priceService.dailyFiatPricesOf(
+      'bsc',
+      BCOIN_CONTRACT_ADDRESS,
+      parseCurrency(clientStateChangedEvent)?.id,
+    );
   }
 }
