@@ -33,13 +33,13 @@ export default function element(): UiElement {
           }),
         ],
       }),
-      summaryStats(),
+      summaryRow(),
       tableRow(),
     ],
   });
 }
 
-function summaryStats() {
+function summaryRow() {
   return Row({
     children: [
       Col({

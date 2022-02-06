@@ -5,19 +5,19 @@ export class PnlDocument extends EkDocument {
     super(properties);
   }
 
-  action: string;
-  actionTooltip: string;
-  bcoinValue: number;
-  block: number;
-  costBasisFiat: number;
-  ownerAddress: string;
-  ownerChain: string;
-  gasBnbValue: number;
-  gasFiatValue: number;
-  fiatSymbol: string;
-  pnlFiatValue: number;
-  realizedValueFiat: number;
-  timestamp: number;
-  txlink: string;
-  updated: number;
+  readonly action: string;
+  readonly actionTooltip: string;
+  readonly bcoinValue: number;
+  readonly block: number;
+  readonly costBasisFiat: number;
+  readonly ownerAddress: string;
+  readonly ownerChain: string;
+  readonly gasBnbValue: number;
+  readonly gasFiatValue: number;
+  readonly fiatSymbol: string;
+  readonly pnlFiatValue: number;
+  readonly realizedValueFiat: number;
+  readonly timestamp: number;
+  readonly txlink: string;
+  readonly updated: number;
 }
