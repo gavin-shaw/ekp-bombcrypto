@@ -11,11 +11,7 @@ import { Injectable } from '@nestjs/common';
 import _ from 'lodash';
 import moment from 'moment';
 import { filter } from 'rxjs';
-import {
-  BCOIN_CONTRACT_ADDRESS,
-  BHERO_CONTRACT_ADDRESS,
-  BHOUSE_CONTRACT_ADDRESS,
-} from '../util';
+import { BCOIN_CONTRACT_ADDRESS } from '../util';
 import { IntroDocument } from './intro.document';
 
 const FILTER_PATH = '/plugin/bombcrypto/intro';
@@ -45,21 +41,12 @@ export class IntroService {
       .latestPricesOf(['bomber-coin'], currency.id)
       .then((it) => it[0]);
 
-    const [bcoinTokenTransfers, bheroTokenTransfers, bhouseTokenTransfers] =
-      await Promise.all([
-        this.transactionService.contractTokenTransfersOf(
-          'bsc',
-          BCOIN_CONTRACT_ADDRESS,
-        ),
-        this.transactionService.contractTokenTransfersOf(
-          'bsc',
-          BHERO_CONTRACT_ADDRESS,
-        ),
-        this.transactionService.contractTokenTransfersOf(
-          'bsc',
-          BHOUSE_CONTRACT_ADDRESS,
-        ),
-      ]);
+    const [bcoinTokenTransfers] = await Promise.all([
+      this.transactionService.contractTokenTransfersOf(
+        'bsc',
+        BCOIN_CONTRACT_ADDRESS,
+      ),
+    ]);
 
     const firstTransfer = _.chain(bcoinTokenTransfers)
       .sortBy('blockTimestamp')
