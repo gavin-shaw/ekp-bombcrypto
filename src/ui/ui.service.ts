@@ -9,7 +9,7 @@ import menus from './menus';
 import pages from './pages';
 
 @Injectable()
-export class UiProcessor {
+export class UiService {
   constructor(private clientService: ClientService) {
     this.clientService.clientStateEvents$.subscribe(
       (event: ClientStateChangedEvent) =>

@@ -30,7 +30,7 @@ const FILTER_PATH = '/plugin/bombcrypto/pnl';
 const COLLECTION_NAME = collection(PnlDocument);
 
 @Injectable()
-export class PnlProcessor {
+export class PnlService {
   constructor(
     private clientService: ClientService,
     private moralisService: MoralisService,
