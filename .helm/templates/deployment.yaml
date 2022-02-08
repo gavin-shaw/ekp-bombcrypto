@@ -34,6 +34,8 @@ spec:
               value: 'ekp-bombcrypto-redis-master'
             - name: OPENSEA_API_KEY
               value: '{{ .Values.opensea.apiKey }}'
+            - name: SENTRY_DSN
+              value: '{{ .Values.sentry.dsn }}'
           ports:
             - containerPort: 3001
               protocol: TCP
