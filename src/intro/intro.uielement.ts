@@ -21,7 +21,6 @@ export default function element(): UiElement {
     children: [
       headerRow(),
       Row({
-        className: 'mt-2',
         children: [
           Col({
             className: 'col-12 col-md-6',
@@ -168,7 +167,7 @@ export function infoRow() {
 
 export function imagesRow() {
   return Row({
-    className: 'pt-2',
+    className: 'pt-4',
     children: [
       Col({
         className: 'col-12 px-md-3 pb-3',
