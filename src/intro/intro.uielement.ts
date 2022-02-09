@@ -53,7 +53,7 @@ function headerRow(): UiElement {
         children: [],
       }),
       Col({
-        className: 'col-auto my-auto',
+        className: 'col-auto my-auto pb-1',
         children: [
           Link({
             content: formatTemplate('BCOIN {{ price }}', {
@@ -69,7 +69,7 @@ function headerRow(): UiElement {
         ],
       }),
       Col({
-        className: 'col-auto my-auto pr-3',
+        className: 'col-auto my-auto pr-3 pb-1',
         children: [socialsRow()],
       }),
     ],
@@ -171,7 +171,7 @@ export function imagesRow() {
     className: 'pt-2',
     children: [
       Col({
-        className: 'col-12 px-3 pb-3',
+        className: 'col-12 px-md-3 pb-3',
         children: [
           Image({
             className: 'w-100',
@@ -180,7 +180,7 @@ export function imagesRow() {
         ],
       }),
       Col({
-        className: 'col-12 px-3 pb-3',
+        className: 'col-12 px-md-3 pb-3',
         children: [
           Image({
             className: 'w-100',
