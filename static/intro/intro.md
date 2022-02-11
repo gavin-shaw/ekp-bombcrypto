@@ -1,14 +1,14 @@
 #### How do I earn?
 
-✔ &nbsp; Buy a Hero NFT for `{{ heroNftPrice }}`.
+Buy a Hero NFT for `{{ heroNftPrice }}`.
 
-✔ &nbsp; Keep the game open in your browser, send your hero to play every `{{ sendYourHeroEvery }}`.
+Keep the game open in your browser, send your hero to play every `{{ sendYourHeroEvery }}`.
 
-✔ &nbsp; About every `{{ earnEvery }}` you will finish a level and earn `{{ earnAmount }}`.
+About every `{{ earnEvery }}` you will finish a level and earn `{{ earnAmount }}`.
 
-✔ &nbsp; On average you will earn `{{ earnPerDay }}` a day.
+On average you will earn `{{ earnPerDay }}` a day.
 
-✔ &nbsp; To improve your earning, buy more heroes, and upgrade them.
+To improve your earning, buy more heroes, and upgrade them.
 
 [🙋‍♂️ Use our team calculator here to get some numbers before diving in](/plugin/bombcrypto/team)
 
@@ -23,11 +23,11 @@ Linked in profiles are here:
 
 #### General Game Info
 
-✔ &nbsp; There are `{{ numPlayers }} players` interacting with the game every day.
+There are `{{ numPlayers }} players` interacting with the game every day.
 
-✔ &nbsp; The biggest winner has earned `{{ biggestWinnerAmount }}`. 
+The biggest winner has earned `{{ biggestWinnerAmount }}`. 
 
-✔ &nbsp; The biggest loser has lost `{{ biggestLoserAmount }}`.
+The biggest loser has lost `{{ biggestLoserAmount }}`.
 
 &nbsp;
 

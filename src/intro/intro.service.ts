@@ -11,7 +11,6 @@ import { Injectable } from '@nestjs/common';
 import _ from 'lodash';
 import moment from 'moment';
 import { filter } from 'rxjs';
-import { BCOIN_CONTRACT_ADDRESS } from '../util';
 import { IntroDocument } from './intro.document';
 
 const FILTER_PATH = '/plugin/bombcrypto/intro';
@@ -27,7 +26,6 @@ export class IntroService {
     this.clientService.clientStateEvents$
       .pipe(filter((event) => filterPath(event, FILTER_PATH)))
       .subscribe((event) => {
-        // Handle the event
         this.handleClientStateEvent(event);
       });
   }
@@ -36,24 +34,29 @@ export class IntroService {
     clientStateChangedEvent: ClientStateChangedEvent,
   ) {
     const currency = parseCurrency(clientStateChangedEvent);
-
     const bcoinPrice = await this.coingeckoService
       .latestPricesOf(['bomber-coin'], currency.id)
       .then((it) => it[0]);
 
-    const [bcoinTokenTransfers] = await Promise.all([
-      this.transactionService.contractTokenTransfersOf(
-        'bsc',
-        BCOIN_CONTRACT_ADDRESS,
-      ),
-    ]);
+    const bcoinTransactions = await this.transactionService.transactionModel
+      .find()
+      .limit(1);
 
-    const firstTransfer = _.chain(bcoinTokenTransfers)
+    // const [bcoinTokenTransfers] = await Promise.all([
+    //   this.transactionService.contractTokenTransfersOf(
+    //     'bsc',
+    //     BCOIN_CONTRACT_ADDRESS,
+    //   ),
+    // ]);
+
+    const firstTransfer = _.chain(bcoinTransactions)
       .sortBy('blockTimestamp')
       .first()
       .value();
 
     const firstTransferMoment = moment.unix(firstTransfer.blockTimestamp);
+
+    console.log(firstTransferMoment);
 
     const documents: IntroDocument[] = [
       {
@@ -61,9 +64,9 @@ export class IntroService {
         biggestLoserAmount: 0,
         biggestWinnerAmount: 0,
         bcoinPrice: bcoinPrice.price,
-        earnAmount: 0.02 * bcoinPrice.price,
+        earnAmount: 0.008 * bcoinPrice.price,
         earnEvery: '2 hrs',
-        earnPerDay: 0.02 * bcoinPrice.price * 12,
+        earnPerDay: 0.008 * bcoinPrice.price * 12,
         fiatSymbol: currency.symbol,
         gameUpTime: firstTransferMoment.fromNow(),
         heroNftPrice: 10 * bcoinPrice.price,

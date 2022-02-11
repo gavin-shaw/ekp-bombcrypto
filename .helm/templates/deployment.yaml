@@ -30,6 +30,8 @@ spec:
               value: '{{ .Values.moralis.serverUrl }}'
             - name: MONGO_HOST
               value: '{{ .Values.mongodb.host }}'
+            - name: MONGO_DB_NAME
+              value: '{{ .Values.mongodb.dbName }}'
             - name: REDIS_HOST
               value: 'ekp-bombcrypto-redis-master'
             - name: OPENSEA_API_KEY
