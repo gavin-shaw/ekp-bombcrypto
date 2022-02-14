@@ -110,7 +110,7 @@ export class UpdateWalletsProcessor {
 
       transaction?.finish();
     } catch (error) {
-      console.error(error);
+      logger.error(error);
       this.apmService.captureError(error);
       throw error;
     } finally {
