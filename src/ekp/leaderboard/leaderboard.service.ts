@@ -68,9 +68,9 @@ export class LeaderboardService {
         startTimestamp: wallet.startTimestamp,
         updated: wallet.endTimestamp,
       }))
-      .sortBy('net')
+      .sortBy('netUsd')
       .reverse()
-      .take(100)
+      .take(500)
       .value();
   }
 }
