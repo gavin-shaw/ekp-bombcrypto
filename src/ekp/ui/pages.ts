@@ -1,4 +1,5 @@
 import intro from '../intro/intro.uielement';
+import leaderboard from '../leaderboard/leaderboard.uielement';
 import pnl from '../pnl/pnl.uielement';
 
 export default function pages() {
@@ -10,6 +11,10 @@ export default function pages() {
     {
       id: 'bombcrypto/intro',
       element: intro(),
+    },
+    {
+      id: 'bombcrypto/leaderboard',
+      element: leaderboard(),
     },
   ];
 }

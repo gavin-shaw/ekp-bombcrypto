@@ -1,11 +1,14 @@
-import { SdkModule } from '@earnkeeper/ekp-sdk-nestjs';
+import { EkConfigService } from '@earnkeeper/ekp-sdk-nestjs';
 import { Module } from '@nestjs/common';
-import { IntroService } from './intro/intro.service';
-import { PnlService } from './pnl/pnl.service';
-import { UiService } from './ui/ui.service';
+import { MongooseModule } from '@nestjs/mongoose';
+import { EkpModule } from './ekp/ekp.module';
+import { JobsModule } from './jobs/jobs.module';
 
 @Module({
-  imports: [SdkModule],
-  providers: [IntroService, PnlService, UiService],
+  imports: [
+    MongooseModule.forRootAsync({ useClass: EkConfigService }),
+    JobsModule,
+    EkpModule,
+  ],
 })
 export class WorkerApp {}

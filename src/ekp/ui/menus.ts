@@ -12,5 +12,11 @@ export default function menus() {
       navLink: 'bombcrypto/pnl',
       icon: 'cil-bank',
     },
+    {
+      id: 'bombcrypto-leaderboard',
+      title: 'Leaderboard',
+      navLink: 'bombcrypto/leaderboard',
+      icon: 'cil-badge',
+    },
   ];
 }

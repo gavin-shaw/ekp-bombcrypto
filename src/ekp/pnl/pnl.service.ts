@@ -19,11 +19,11 @@ import { ethers } from 'ethers';
 import _ from 'lodash';
 import moment from 'moment';
 import { distinct, filter, from, mergeMap, of, toArray } from 'rxjs';
-import { BCOIN_CONTRACT_ADDRESS, BOMB_CONTRACT_ADDRESSES } from '../util';
+import { BCOIN_CONTRACT_ADDRESS, BOMB_CONTRACT_ADDRESSES } from '../../util';
 import {
   BHERO_CONTRACT_ADDRESS,
   BHOUSE_CONTRACT_ADDRESS,
-} from '../util/constants';
+} from '../../util/constants';
 import { PnlDocument } from './pnl.document';
 
 const FILTER_PATH = '/plugin/bombcrypto/pnl';
@@ -42,7 +42,9 @@ export class PnlService {
       .pipe(
         // Only process events for clients looking at the pnl
         // (save resources)
-        filter((event) => filterPath(event, FILTER_PATH)),
+        filter((event: ClientStateChangedEvent) =>
+          filterPath(event, FILTER_PATH),
+        ),
       )
       .subscribe((event) => {
         // Handle the event
@@ -281,7 +283,8 @@ export class PnlService {
           // BHERO mint()
           if (
             tx.input.startsWith('0xa0712d68') &&
-            tx.toAddress === BHERO_CONTRACT_ADDRESS
+            tx.toAddress === BHERO_CONTRACT_ADDRESS &&
+            !!firstTokenTransfer
           ) {
             action = 'Mint Heroes';
 

@@ -24,7 +24,11 @@ export class IntroService {
     private transactionService: TransactionService,
   ) {
     this.clientService.clientStateEvents$
-      .pipe(filter((event) => filterPath(event, FILTER_PATH)))
+      .pipe(
+        filter((event: ClientStateChangedEvent) =>
+          filterPath(event, FILTER_PATH),
+        ),
+      )
       .subscribe((event) => {
         this.handleClientStateEvent(event);
       });
@@ -55,8 +59,6 @@ export class IntroService {
       .value();
 
     const firstTransferMoment = moment.unix(firstTransfer.blockTimestamp);
-
-    console.log(firstTransferMoment);
 
     const documents: IntroDocument[] = [
       {

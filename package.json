@@ -5,7 +5,6 @@
     "prebuild": "rimraf dist",
     "build": "nest build",
     "start": "nest start --watch",
-    "start:prod": "node dist/main",
     "test:e2e": "jest --config ./test/jest-e2e.json --watch",
     "gen-secret-key": "werf helm secret generate-secret-key > .werf_secret_key",
     "encrypt-secrets": "werf helm secret values encrypt clear-values.yaml -o .helm/secret-values.yaml",
@@ -14,6 +13,8 @@
   },
   "license": "GPL-3.0-or-later",
   "dependencies": {
+    "@earnkeeper/ekp-sdk": "file:.yalc/@earnkeeper/ekp-sdk",
+    "@earnkeeper/ekp-sdk-nestjs": "file:.yalc/@earnkeeper/ekp-sdk-nestjs",
     "@earnkeeper/ekp-ui": "^0.1.3",
     "@nestjs/bull": "^0.4.2",
     "@nestjs/common": "^8.2.5",
@@ -52,6 +53,7 @@
     "winston": "^3.3.3"
   },
   "devDependencies": {
+    "@faker-js/faker": "^6.0.0-alpha.6",
     "@nestjs/cli": "^8.0.0",
     "@nestjs/schematics": "^8.0.0",
     "@nestjs/testing": "^8.0.0",

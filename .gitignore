@@ -40,3 +40,7 @@ clear-values.yaml
 
 # Nest.js
 .env
+
+# Yalc
+.yalc
+yalc.lock
