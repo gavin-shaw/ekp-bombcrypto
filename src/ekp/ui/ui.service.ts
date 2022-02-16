@@ -1,9 +1,5 @@
-import {
-  ClientService,
-  ClientStateChangedEvent,
-  LayerDto,
-  logger,
-} from '@earnkeeper/ekp-sdk-nestjs';
+import { ClientStateChangedEvent, LayerDto } from '@earnkeeper/ekp-sdk';
+import { ClientService, logger } from '@earnkeeper/ekp-sdk-nestjs';
 import { Injectable } from '@nestjs/common';
 import menus from './menus';
 import pages from './pages';

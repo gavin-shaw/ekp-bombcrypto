@@ -1,8 +1,4 @@
-import {
-  parseEvmAddress,
-  parseStartOfDay,
-  TRANSFER_TOPIC,
-} from '@earnkeeper/ekp-sdk';
+import { evm, TRANSFER_TOPIC } from '@earnkeeper/ekp-sdk';
 import {
   ApmService,
   FiatPrice,
@@ -197,7 +193,12 @@ export class UpdateWalletsProcessor {
       const updatedWallets = <Record<string, BombcryptoWallet>>{};
 
       for (const log of nextLogs) {
-        const midnightKey = parseStartOfDay(log.blockTimestamp).toString();
+        const midnightKey = moment
+          .unix(log.blockTimestamp)
+          .utc()
+          .startOf('day')
+          .unix()
+          .toString();
 
         const bcoinPrice = bcoinPriceMap[midnightKey] ?? firstBcoinPrice;
 
@@ -230,8 +231,8 @@ export class UpdateWalletsProcessor {
     bcoinPrice: FiatPrice,
     log: TransactionLog,
   ) {
-    const address1 = parseEvmAddress(log.topic1);
-    const address2 = parseEvmAddress(log.topic2);
+    const address1 = evm.topicToAddress(log.topic1);
+    const address2 = evm.topicToAddress(log.topic2);
 
     let wallet1 = walletMap[address1];
     let wallet2 = walletMap[address2];

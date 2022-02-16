@@ -1,13 +1,14 @@
-import { NULL_ADDRESS } from '@earnkeeper/ekp-sdk';
 import {
-  ClientService,
   ClientStateChangedEvent,
   collection,
-} from '@earnkeeper/ekp-sdk-nestjs';
+  NULL_ADDRESS,
+} from '@earnkeeper/ekp-sdk';
+import { ClientService } from '@earnkeeper/ekp-sdk-nestjs';
 import { Injectable } from '@nestjs/common';
 import _ from 'lodash';
 import { BombcryptoWallet, BombcryptoWalletRepository } from '../../db';
 import {
+  BOMB_CRYPTO_DEPLOYER_ADDRESS,
   KIPS_LOCKED_WALLET_ADDRESS,
   PANCAKE_SWAP_BCOIN_BUSD_ADDRESS,
 } from '../../util';
@@ -52,6 +53,7 @@ export class LeaderboardService {
             NULL_ADDRESS,
             PANCAKE_SWAP_BCOIN_BUSD_ADDRESS,
             KIPS_LOCKED_WALLET_ADDRESS,
+            BOMB_CRYPTO_DEPLOYER_ADDRESS,
           ].includes(wallet.address),
       )
       .map((wallet) => ({

@@ -1,6 +1,6 @@
 import intro from '../intro/intro.uielement';
 import leaderboard from '../leaderboard/leaderboard.uielement';
-import pnl from '../pnl/pnl.uielement';
+import pnl from '../my-pnl/my-pnl.uielement';
 
 export default function pages() {
   return [

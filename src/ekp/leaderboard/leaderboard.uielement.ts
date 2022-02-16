@@ -1,4 +1,4 @@
-import { chains, collection, documents } from '@earnkeeper/ekp-sdk-nestjs';
+import { chains, collection, documents } from '@earnkeeper/ekp-sdk';
 import {
   Col,
   Container,

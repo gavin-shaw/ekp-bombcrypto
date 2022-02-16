@@ -1,4 +1,4 @@
-import { path } from '@earnkeeper/ekp-sdk-nestjs';
+import { path } from '@earnkeeper/ekp-sdk';
 import {
   Col,
   Container,

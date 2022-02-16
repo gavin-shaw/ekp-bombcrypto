@@ -1,15 +1,17 @@
 import {
   chains,
-  ClientService,
   ClientStateChangedEvent,
   collection,
-  FiatPrice,
   filterPath,
-  MoralisService,
   parseClientAddresses,
   parseCurrency,
-  PriceService,
   TokenMetadata,
+} from '@earnkeeper/ekp-sdk';
+import {
+  ClientService,
+  FiatPrice,
+  MoralisService,
+  PriceService,
   TokenTransfer,
   Transaction,
   TransactionService,
@@ -19,18 +21,19 @@ import { ethers } from 'ethers';
 import _ from 'lodash';
 import moment from 'moment';
 import { distinct, filter, from, mergeMap, of, toArray } from 'rxjs';
-import { BCOIN_CONTRACT_ADDRESS, BOMB_CONTRACT_ADDRESSES } from '../../util';
 import {
+  BCOIN_CONTRACT_ADDRESS,
   BHERO_CONTRACT_ADDRESS,
   BHOUSE_CONTRACT_ADDRESS,
-} from '../../util/constants';
-import { PnlDocument } from './pnl.document';
+  BOMB_CONTRACT_ADDRESSES,
+} from '../../util';
+import { PnlDocument } from './my-pnl.document';
 
 const FILTER_PATH = '/plugin/bombcrypto/pnl';
 const COLLECTION_NAME = collection(PnlDocument);
 
 @Injectable()
-export class PnlService {
+export class MyPnlService {
   constructor(
     private clientService: ClientService,
     private moralisService: MoralisService,

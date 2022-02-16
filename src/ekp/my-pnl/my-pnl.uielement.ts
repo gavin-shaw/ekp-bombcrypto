@@ -1,22 +1,25 @@
-import { collection, documents, path } from '@earnkeeper/ekp-sdk-nestjs';
+import { collection, documents, path } from '@earnkeeper/ekp-sdk';
 import {
   Col,
   Container,
   Datatable,
   DatatableColumn,
   formatCurrency,
+  formatTemplate,
   formatTimeToNow,
   formatToken,
   isBusy,
+  jsonArray,
   Link,
   PageHeaderTile,
   Row,
+  RpcOrPrimitive,
   sum,
   SummaryStats,
   UiElement,
   WalletSelector,
 } from '@earnkeeper/ekp-ui';
-import { PnlDocument } from './pnl.document';
+import { PnlDocument } from './my-pnl.document';
 
 export default function element(): UiElement {
   return Container({
@@ -140,4 +143,15 @@ function tableColumns(): DatatableColumn[] {
       grow: 0,
     },
   ];
+}
+
+export function context(): RpcOrPrimitive {
+  return jsonArray(
+    formatTemplate(
+      `${path(PnlDocument)}[?(@.ownerAddress == "{{ ownerAddress }}")]`,
+      {
+        ownerAddress: '$.location.pathParams[1]',
+      },
+    ),
+  );
 }

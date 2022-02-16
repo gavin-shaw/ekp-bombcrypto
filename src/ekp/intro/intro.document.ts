@@ -1,6 +1,6 @@
-import { EkDocument } from '@earnkeeper/ekp-sdk-nestjs';
+import { DocumentDto } from '@earnkeeper/ekp-sdk';
 
-export class IntroDocument extends EkDocument {
+export class IntroDocument extends DocumentDto {
   constructor(properties: IntroDocument) {
     super(properties);
   }

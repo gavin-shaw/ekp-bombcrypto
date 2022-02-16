@@ -1,10 +1,12 @@
 import {
-  ClientService,
   ClientStateChangedEvent,
-  CoingeckoService,
   collection,
   filterPath,
   parseCurrency,
+} from '@earnkeeper/ekp-sdk';
+import {
+  ClientService,
+  CoingeckoService,
   TransactionService,
 } from '@earnkeeper/ekp-sdk-nestjs';
 import { Injectable } from '@nestjs/common';
