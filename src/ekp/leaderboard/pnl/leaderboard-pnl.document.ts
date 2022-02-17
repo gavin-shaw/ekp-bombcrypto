@@ -1,7 +1,7 @@
 import { DocumentDto } from '@earnkeeper/ekp-sdk';
 
-export class MyPnlDocument extends DocumentDto {
-  constructor(properties: MyPnlDocument) {
+export class LeaderboardPnlDocument extends DocumentDto {
+  constructor(properties: LeaderboardPnlDocument) {
     super(properties);
   }
 

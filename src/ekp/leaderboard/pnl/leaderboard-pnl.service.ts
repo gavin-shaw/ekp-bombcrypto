@@ -27,7 +27,7 @@ import {
   BHOUSE_CONTRACT_ADDRESS,
   BOMB_CONTRACT_ADDRESSES,
 } from '../../util';
-import { MyPnlDocument } from './my-pnl.document';
+import { MyPnlDocument } from './leaderboard-pnl.document';
 
 const FILTER_PATH = '/plugin/bombcrypto/pnl';
 const COLLECTION_NAME = collection(MyPnlDocument);

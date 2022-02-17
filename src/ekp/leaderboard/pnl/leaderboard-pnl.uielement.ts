@@ -19,7 +19,7 @@ import {
   UiElement,
   WalletSelector,
 } from '@earnkeeper/ekp-ui';
-import { MyPnlDocument } from './my-pnl.document';
+import { MyPnlDocument } from './leaderboard-pnl.document';
 
 export default function element(): UiElement {
   return Container({
